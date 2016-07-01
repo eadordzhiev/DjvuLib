@@ -79,15 +79,13 @@ IAsyncAction^ DjvuPage::RenderRegionAsync(WriteableBitmap^ bitmap, BitmapSize re
 		throw ref new NullReferenceException("Bitmap is null.");
 	}
 
-	auto pixelBuffer = bitmap->PixelBuffer;
-	
+	auto pixelBuffer = bitmap->PixelBuffer;	
 	if (pixelBuffer->Length < renderRegion.Width * renderRegion.Height * 4)
 	{
 		throw ref new InvalidArgumentException("Buffer is too small.");
 	}
 
 	auto bufferPtr = IBufferUtilities::GetPointer(pixelBuffer);
-
 	if (bufferPtr == nullptr)
 	{
 		throw ref new NullReferenceException("bufferPtr == nullptr");
@@ -110,9 +108,6 @@ SoftwareBitmap^ DjvuPage::RenderRegionToSoftwareBitmap(BitmapSize rescaledPageSi
 	IBufferUtilities::GetPointer(memoryBufferReference, &pointer, &capacity);
 
 	RenderRegion(pointer, rescaledPageSize, renderRegion);
-
-	delete memoryBufferReference;
-	delete bitmapBuffer;
 
 	return softwareBitmap;
 }

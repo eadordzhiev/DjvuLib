@@ -36,8 +36,7 @@ DjvuDocument::DjvuDocument(IRandomAccessStream^ stream)
 	GP<ByteStream> bs = new WinrtByteStream(stream);
 
 	context = ddjvu_context_create(nullptr);
-	document = ddjvu_document_create_by_bytestream(context, bs, false);
-	
+	document = ddjvu_document_create_by_bytestream(context, bs, false);	
 	if (document == nullptr || ddjvu_document_decoding_error(document))
 	{
 		throw ref new FailureException(L"Failed to decode the document.");
@@ -45,15 +44,13 @@ DjvuDocument::DjvuDocument(IRandomAccessStream^ stream)
 
 	auto djvuDocument = ddjvu_get_DjVuDocument(document);
 	auto doctype = djvuDocument->get_doc_type();
-
 	if (doctype != DjVuDocument::DOC_TYPE::SINGLE_PAGE && doctype != DjVuDocument::DOC_TYPE::BUNDLED)
 	{
-		throw ref new NotImplementedException("Unsupported document type. Only bundled and single page documents are supported.");
+		throw ref new NotImplementedException(L"Unsupported document type. Only bundled and single page documents are supported.");
 	}
 
 	pageCount = djvuDocument->get_pages_num();
 	pageInfos = ref new Platform::Array<PageInfo>(pageCount);
-
 	for (unsigned int i = 0; i < pageCount; i++)
 	{
 		ddjvu_pageinfo_t ddjvuinfo;
@@ -106,9 +103,7 @@ IAsyncOperation<TextLayerZone^>^ DjvuDocument::GetTextLayerAsync(uint32_t pageNu
 DjvuPage^ DjvuDocument::GetPage(uint32_t pageNumber)
 {
 	auto page = ddjvu_page_create_by_pageno(document, pageNumber - 1);
-	assert(page != nullptr);
-	
-	if (ddjvu_page_decoding_error(page))
+	if (page == nullptr || ddjvu_page_decoding_error(page))
 	{
 		throw ref new FailureException("Failed to decode the page.");
 	}

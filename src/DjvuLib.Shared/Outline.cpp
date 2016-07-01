@@ -40,8 +40,7 @@ IVectorView<DjvuOutlineItem^>^ processNavChunk(const GP<DjVmNav> &nav, int &pos,
 			pageNumber = ddjvu_document_search_pageno(document, &url[1]) + 1;
 		}
 
-		auto item = ref new DjvuOutlineItem(name, pageNumber, items);
-		result.push_back(item);
+		result.push_back(ref new DjvuOutlineItem(name, pageNumber, items));
 	}
 
 	return ref new VectorView<DjvuOutlineItem^>(move(result));
@@ -51,14 +50,12 @@ IVectorView<DjvuOutlineItem^>^ DjvuOutlineItem::GetOutline(ddjvu_document_s* doc
 {
 	auto djvuDocument = ddjvu_get_DjVuDocument(document);
 	auto nav = djvuDocument->get_djvm_nav();
-
-	if (!nav)
+	if (nav == nullptr)
 	{
 		return nullptr;
 	}
 
 	int pos = 0;
 	auto result = processNavChunk(nav, pos, nav->getBookMarkCount(), document);
-
 	return result;
 }

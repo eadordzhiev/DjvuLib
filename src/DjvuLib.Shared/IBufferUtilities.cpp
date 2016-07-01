@@ -35,5 +35,5 @@ void IBufferUtilities::GetPointer(IMemoryBufferReference^ reference, void** poin
 
 	ComPtr<IMemoryBufferByteAccess> bufferByteAccess;
 	ThrowIfFailed(inspectable.As(&bufferByteAccess));
-	ThrowIfFailed(bufferByteAccess->GetBuffer((BYTE**) pointer, capacity));
+	ThrowIfFailed(bufferByteAccess->GetBuffer(reinterpret_cast<BYTE**>(pointer), capacity));
 }
